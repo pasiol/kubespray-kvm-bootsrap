@@ -1,0 +1,6 @@
+<network>
+  <name>virbr-{{ cluster_name }}</name>
+  <bridge name="virbr-{{ cluster_name }}"/>
+  <forward mode="nat"/>
+  <ip address="192.168.152.1" netmask="255.255.255.0"></ip>
+</network>

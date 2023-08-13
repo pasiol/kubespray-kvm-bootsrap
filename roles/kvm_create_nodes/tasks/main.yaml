@@ -1,0 +1,53 @@
+---
+- name: Generating the SSH-key for Ansible
+  ansible.builtin.include_tasks: generate_ssh_key.yaml
+
+- name: Ensure requirements in place
+  ansible.builtin.package:
+    name:
+      - libguestfs-tools
+      - python3-libvirt
+      - libvirt-devel
+      - cloud-utils # debian-family cloud-image-utils
+    state: present
+  become: true
+
+- name: Create network for cluster
+  ansible.builtin.include_tasks: create_network.yaml
+
+- name: Get VMs list
+  community.libvirt.virt:
+    command: list_vms
+  register: existing_vms
+  changed_when: false
+
+- name: Check is base image present
+  ansible.builtin.stat:
+    path: "{{ image_pool_dir }}/{{ base_image_name }}"
+  register: stat_result
+
+- name: Download base image
+  become: true
+  ansible.builtin.get_url:
+    url: "{{ base_image_url }}"
+    dest: "{{ image_pool_dir }}/{{ base_image_name }}"
+    checksum: "{{ base_image_checksum }}"
+    mode: "0700"
+  register: base_image
+  when: not stat_result.stat.exists
+
+- name: Create the master vms
+  ansible.builtin.include_tasks: create_kvm.yaml
+  vars:
+    vm_name: "{{ item.name }}{{ cluster_name }}"
+  loop: "{{ masters }}"
+
+- name: Create the worker vms
+  ansible.builtin.include_tasks: create_kvm.yaml
+  vars:
+    vm_name: "{{ item.name }}{{ inventory_hostname }}"
+  loop: "{{ workers }}"
+
+- name: Wait for VMs to finish installing
+  ansible.builtin.wait_for:
+    timeout: 30
