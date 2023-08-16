@@ -1,8 +1,5 @@
 ---
-base_image_checksum: # updated 2023-08-13
-  sha512:11da063aa5c817f70ceabead94abc0a35caf3db318feb3a0698918331faa19cebbe7cc2435eb6f0dca92a5148e322f873fdeda2027a30ee01635ace396770097
-base_image_name: debian-11-genericcloud-amd64.qcow2
-base_image_url: https://cloud.debian.org/images/cloud/bullseye/latest/debian-11-genericcloud-amd64.qcow2
+kvm_host: kvm-dev
 cluster_name: k8s-dev
 image_pool_dir: /var/lib/libvirt/images
 timezone: Europe/Helsinki
@@ -11,49 +8,61 @@ network:
   ipv4Address: 192.168.152.0
   ipv4_gateway: 192.168.152.1
   ipv4_mask: 255.255.255.0
-networks:
-- name: "{{ cluster_name }}"
+storage_pools:
+  - pool:
+      name: pool1
+      path: /var/lib/libvirt/filesystems/pool1/
+  - pool:
+      name: pool2
+      path: /var/lib/libvirt/filesystems/pool2/
+  - pool:
+      name: pool3
+      path: /var/lib/libvirt/filesystems/pool3/
+base_image_checksum: # updated 2023-08-13
+  sha512:11da063aa5c817f70ceabead94abc0a35caf3db318feb3a0698918331faa19cebbe7cc2435eb6f0dca92a5148e322f873fdeda2027a30ee01635ace396770097
+base_image_name: debian-11-genericcloud-amd64.qcow2
+base_image_url: https://cloud.debian.org/images/cloud/bullseye/latest/debian-11-genericcloud-amd64.qcow2
 masters:
-- disk_size: 15G
-  ipv4: 192.168.152.11/24
-  name: node1
-  network_name: "{{ cluster_name }}"
-  pool_home: /var/lib/libvirt/pool/
-  ram_mb: 4096
-  vcpus: '2'
-- disk_size: 15G
-  ipv4: 192.168.152.12/24
-  name: node2
-  network_name: "{{ cluster_name }}"
-  pool_home: /var/lib/libvirt/pool/
-  ram_mb: 4096
-  vcpus: '2'
-- disk_size: 15G
-  ipv4: 192.168.152.13/24
-  name: node3
-  network_name: "{{ cluster_name }}"
-  pool_home: /var/lib/libvirt/pool/
-  ram_mb: 4096
-  vcpus: '2'
+  - disk_size: 100G
+    ipv4: 192.168.152.11/24
+    name: node1
+    network_name: virbr-{{ cluster_name }}
+    pool_home: /var/lib/libvirt/filesystems/pool1/
+    ram_mb: 12288
+    vcpus: '2'
+  - disk_size: 100G
+    ipv4: 192.168.152.12/24
+    name: node2
+    network_name: virbr-{{ cluster_name }}
+    pool_home: /var/lib/libvirt/filesystems/pool2/
+    ram_mb: 12288
+    vcpus: '2'
+  - disk_size: 100G
+    ipv4: 192.168.152.13/24
+    name: node3
+    network_name: virbr-{{ cluster_name }}
+    pool_home: /var/lib/libvirt/filesystems/pool3/
+    ram_mb: 12288
+    vcpus: '2'
 workers:
-- disk_size: 20G
-  ipv4: 192.168.152.21/24
-  name: node4
-  network_name: "{{ cluster_name }}"
-  pool_home: /var/lib/libvirt/pool/
-  ram_mb: 4096
-  vcpus: '2'
-- disk_size: 20G
-  ipv4: 192.168.152.22/24
-  name: node5
-  network_name: "{{ cluster_name }}"
-  pool_home: /var/lib/libvirt/pool/
-  ram_mb: 4096
-  vcpus: '2'
-- disk_size: 20G
-  ipv4: 192.168.152.23/24
-  name: node6
-  network_name: "{{ cluster_name }}"
-  pool_home: /var/lib/libvirt/pool/
-  ram_mb: 4096
-  vcpus: '2'
+  - disk_size: 300G
+    ipv4: 192.168.152.21/24
+    name: node4
+    network_name: virbr-{{ cluster_name }}
+    pool_home: /var/lib/libvirt/filesystems/pool1/
+    ram_mb: 24576
+    vcpus: '2'
+  - disk_size: 300G
+    ipv4: 192.168.152.22/24
+    name: node5
+    network_name: virbr-{{ cluster_name }}
+    pool_home: /var/lib/libvirt/filesystems/pool2/
+    ram_mb: 24576
+    vcpus: '2'
+  - disk_size: 300G
+    ipv4: 192.168.152.23/24
+    name: node6
+    network_name: virbr-{{ cluster_name }}
+    pool_home: /var/lib/libvirt/filesystems/pool3/
+    ram_mb: 24576
+    vcpus: '2'
