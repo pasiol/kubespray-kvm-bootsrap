@@ -1,0 +1,124 @@
+---
+- name: Remove directory .ssh
+  ansible.builtin.file:
+    path: "./.ssh"
+    state: absent
+
+- name: Stop all worker nodes
+  community.libvirt.virt:
+    name: "{{ item.name }}"
+    command: shutdown
+    uri: qemu:///system
+  delegate_to: "{{ kvm_host }}"
+  loop: "{{ workers }}"
+  become_user: root
+  become: true
+  register: result
+  failed_when: not "'not found' in result.sdterr" and result.rc==1
+
+- name: Undefine workers
+  community.libvirt.virt:
+    name: "{{ item.name }}"
+    command: undefine
+    uri: qemu:///system
+  delegate_to: "{{ kvm_host }}"
+  loop: "{{ workers }}"
+  become_user: root
+  become: true
+  register: result
+  failed_when: not "'not found' in result.sdterr" and result.rc==1
+
+- name: Destroy workers
+  community.libvirt.virt:
+    name: "{{ item.name }}"
+    command: destroy
+    uri: qemu:///system
+  delegate_to: "{{ kvm_host }}"
+  loop: "{{ workers }}"
+  become_user: root
+  become: true
+  register: result
+  failed_when: not "'not found' in result.sdterr" and result.rc==1
+
+- name: Stop all master nodes
+  community.libvirt.virt:
+    name: "{{ item.name }}"
+    command: shutdown
+    uri: qemu:///system
+  delegate_to: "{{ kvm_host }}"
+  loop: "{{ masters }}"
+  become_user: root
+  become: true
+  register: result
+  failed_when: not "'not found' in result.sdterr" and result.rc==1
+
+- name: Undefine masters
+  community.libvirt.virt:
+    name: "{{ item.name }}"
+    command: undefine
+    uri: qemu:///system
+  delegate_to: "{{ kvm_host }}"
+  loop: "{{ masters }}"
+  become_user: root
+  become: true
+  register: result
+  failed_when: not "'not found' in result.sdterr" and result.rc==1
+
+- name: Destroy masters
+  community.libvirt.virt:
+    name: "{{ item.name }}"
+    command: destroy
+    uri: qemu:///system
+  delegate_to: "{{ kvm_host }}"
+  loop: "{{ masters }}"
+  become_user: root
+  become: true
+  register: result
+  failed_when: not "'not found' in result.sdterr" and result.rc==1
+
+- name: Remove network
+  community.libvirt.virt_net:
+    state: absent
+    name: "virbr-{{ cluster_name }}"
+    uri: qemu:///system
+  delegate_to: "{{ kvm_host }}"
+  become_user: root
+  become: true
+  register: result
+  failed_when: not "'not found' in result.sdterr"  and result.rc==1
+
+- name: Deactive libvirt pool
+  community.libvirt.virt_pool:
+    state: inactive
+    name: "{{ item.pool.name }}"
+    uri: qemu:///system
+  loop: "{{ storage_pools }}"
+  delegate_to: "{{ kvm_host }}"
+  become_user: root
+  become: true
+  register: result
+  failed_when: not "'not found' in result.sdterr" and result.rc==1
+
+- name: Undefine libvirt pool
+  community.libvirt.virt_pool:
+    command: undefine
+    name: "{{ item.pool.name }}"
+    uri: qemu:///system
+  loop: "{{ storage_pools }}"
+  delegate_to: "{{ kvm_host }}"
+  become_user: root
+  become: true
+  register: result
+  failed_when: not "'not found' in result.sdterr" and result.rc==1
+
+- name: Destroy libvirt pool
+  community.libvirt.virt_pool:
+    command: destroy
+    name: "{{ item.pool.name }}"
+    uri: qemu:///system
+  loop: "{{ storage_pools }}"
+  delegate_to: "{{ kvm_host }}"
+  become_user: root
+  become: true
+  register: result
+  failed_when: not "'not found' in result.sdterr" and result.rc==1

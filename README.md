@@ -20,7 +20,7 @@ Ansible playbook generates VM nodes for the Kubespray cluster on the LibVirt hyp
 - Debian 11, lightweight and easy to set up
 
 ## Roadmap
-- a playbook for removing old cluster
+- ~~a playbook for removing old cluster~~
 - a playbook for installing required libraries for the KVM host
 - creating ssh-keys without community.crypto collection (no need to install extra collection on the server)
 - HAproxy Node

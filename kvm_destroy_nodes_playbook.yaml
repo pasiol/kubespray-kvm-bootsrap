@@ -1,0 +1,8 @@
+---
+- name: Destroy nodes for Kubespray K8S cluster
+  hosts: "{{ kvm_host }}"
+  become_user: root
+  become: true
+  roles:
+  - kvm_destroy_nodes
+  connection: local
