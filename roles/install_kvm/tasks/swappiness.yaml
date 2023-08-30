@@ -1,0 +1,16 @@
+---
+# Swappiness is not happiness in the performance
+# In the production environment should not be any swap partition or file
+- name: Set swappiness 5
+  ansible.posix.sysctl:
+    name: vm.swappiness
+    value: "5"
+  become: true
+
+- name: Add line vm.swappiness=5 to /etc/sysctl.conf if missing
+  ansible.builtin.lineinfile:
+    dest: /etc/sysctl.conf
+    line: vm.swappiness=5
+    regexp: ^vm.swappiness
+    state: present
+  become: true
