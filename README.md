@@ -1,5 +1,7 @@
 # Kubespray KVM cluster nodes bootstrapping playbook
 
+Work in progress. Expect bugs. The pull requests are welcome.
+
 Ansible playbook generates VM nodes for the Kubespray cluster on the LibVirt hypervisor.  Developers can easily install a cheap local development environment for the HA Kubernetes cluster.
 
 ## Hardware requirements
@@ -11,7 +13,7 @@ Ansible playbook generates VM nodes for the Kubespray cluster on the LibVirt hyp
 - for better performance disable the swap partition
 - minimal installation of OS without GUI
 - KVM and libvirt libraries
-- server OS: Debian 11 or RHEL8/9-based distribution
+- server OS: Ubuntu 22.04 or RHEL 9-based distribution
 - firewalld on the KVM host
 - openssh server for management connections and opening access to K8S services
 
@@ -21,8 +23,13 @@ Ansible playbook generates VM nodes for the Kubespray cluster on the LibVirt hyp
 
 ## Roadmap
 - ~~a playbook for removing old cluster~~
-- a playbook for installing required libraries for the KVM host
-- creating ssh-keys without community.crypto collection (no need to install extra collection on the server)
+- ~~a playbook for installing required libraries for the KVM host Ubuntu 22.04~~
+- a playbook for installing required libraries for the KVM host RHEL and derivates
 - HAproxy Node
 - Flatcar Linux
 - Fedora CoreOS
+
+## Running playbook
+
+  ansible-playbook kvm_install.yaml -e "kvm_host=kvm-dev" -K # supporting only Ubuntu 22.04
+  ansible-playbook kvm_create_nodes_playbook.yaml -e "kvm_host=kvm-dev" -K

@@ -4,13 +4,11 @@
 
 - name: Ensure requirements in place
   ansible.builtin.package:
-    name:
-      - libguestfs-tools
-      - python3-libvirt
-      - libvirt-devel
-      - cloud-utils # debian-family cloud-image-utils
+    name: "{{ item }}"
     state: present
   become: true
+  with_items:
+    "{{ kvm_related_packages }}"
 
 - name: Create network for cluster
   ansible.builtin.include_tasks: create_network.yaml
@@ -50,4 +48,4 @@
 
 - name: Wait for VMs to finish installing
   ansible.builtin.wait_for:
-    timeout: 30
+    timeout: 360

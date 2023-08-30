@@ -1,0 +1,6 @@
+---
+kvm_related_packages:
+  - libguestfs-tools
+  - python3-libvirt
+  - libvirt-devel
+  - cloud-utils
