@@ -18,8 +18,8 @@ storage_pools:
   - pool:
       name: pool3
       path: /var/lib/libvirt/filesystems/pool3
-base_image_checksum: # updated 2023-08-29
-  sha512:f16512174452ea49e34d302e86bb11b6f821013dde583bf703550998e87819f98c6e411d7737bd53f16c73007f1c039218f9cd40421ec3a6b5b1fe38044018c0
+base_image_checksum: # updated 2023-12-02
+  sha512:8ae6f0e1be8ce01e1fd4cd883c2ba5d08c550c2aa13b32fa1f24c8cca44e596a197146223b90d84544997a4ba932c99de90e2ce5b1cc3504559066d1d28d630b
 base_image_name: debian-11-genericcloud-amd64.qcow2
 base_image_url: https://cloud.debian.org/images/cloud/bullseye/latest/debian-11-genericcloud-amd64.qcow2
 masters:
